@@ -319,6 +319,18 @@ footer .nav-link:hover {
     box-shadow: none;
 }
 
+/* Responsive boutons */
+@media (max-width: 767.98px) {
+  form.d-inline-block, 
+  .btn.custom-btn {
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 10px !important; 
+  }
+  form.d-inline-block.me-3 {
+    margin-right: 0 !important;
+  }
+}
 
 
 

@@ -205,7 +205,7 @@ try {
                       </button>';
             }
             ?>
-            <a href="mes_trajets.php" class="btn custom-btn ms-2">← Retour à mes trajets</a>
+            <a href="mes_trajets.php" class="btn custom-btn">← Retour à mes trajets</a>
 
         <?php endif; ?>
     </div>

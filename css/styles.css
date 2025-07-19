@@ -1,0 +1,400 @@
+/* Roots*/
+:root {
+    --eco-green: #58876b;
+    --eco-green-dark: #3b634b;
+    --eco-bg: #f3f8f0;
+    --eco-text: #040404;
+    --eco-font: 'Quicksand', sans-serif;
+}
+
+/* Body*/
+html, body {
+  height: 100%;
+  margin: 0;
+  background-color: var(--eco-bg);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex-grow: 1;
+}
+
+    
+
+/* Header*/
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.brand-name {
+    font-family: var(--eco-font);
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--eco-green)
+}
+
+ul.nav .nav-link {
+    color: var(--eco-text);
+    font-family: var(--eco-font);
+    transition: all 0.3s ease;
+}
+
+ul.nav .nav-link:hover {
+    color: var(--eco-green-dark);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); 
+}
+
+
+
+.custom-btn {
+    font-family: var(--eco-font);
+    background-color: var(--eco-green);
+    color: white;
+    border: none;
+    border-radius: 6px;
+
+
+}
+.custom-btn:hover {
+    background-color: var(--eco-green-dark);
+    color: white;
+    box-shadow: 0 6px 10px rgba(14, 138, 65, 0.6);
+
+}
+/* Pages detail anulation*/
+.btn-danger {
+    font-family: var(--eco-font);
+    background-color: rgb(230, 73, 73);
+    color: white;
+    border: none;
+    border-radius: 6px;
+}
+.btn-danger:hover {
+    background-color: rgb(153, 4, 4);
+    color: white;
+    box-shadow: 0 6px 10px rgba(169, 61, 90, 0.6);
+}
+
+a.dropdown-toggle::after {
+    display: none !important;
+    content: none !important;
+}
+.dropdown-menu .dropdown-item:hover {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+.dropdown-menu {
+  padding: 0.25rem 0.5rem !important; /* moins d'espace en haut et en bas */
+  font-size: 0.85rem; /* texte un peu plus petit */
+  min-width: 100px !important; /* largeur minimale si tu veux */
+}
+
+.dropdown-menu .dropdown-item {
+  padding: 0.1rem 0.2rem !important; /* réduit la hauteur de chaque item */
+}
+/* Style identique à ul.nav .nav-link:hover pour le dropdown */
+.dropdown-menu .dropdown-item:not(.text-danger):hover {
+  color: var(--eco-green-dark) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+  background-color: transparent !important;
+}
+
+
+
+
+/* Description*/
+h2 {
+    display: flex;
+    justify-content: center;
+    font-family: var(--eco-font);
+    color: var(--eco-green)
+
+}
+
+.description {
+    max-width: 900px;       
+    margin: 0px auto;    
+    font-size: 1rem;
+    line-height: 1.2;
+    text-align: center;
+    color: var(--eco-text);
+    font-family: var(--eco-font);
+}
+
+p span {
+    color: var(--eco-green); 
+    font-weight: bold;      
+    font-family: var(--eco-font); 
+}
+
+/*Barres de recherche + button de recherche*/
+h3 {
+    display: flex;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-family: var(--eco-font);
+}
+
+.form-control {
+    border: 2px solid var(--eco-green);
+    border-radius: 12px;
+    font-family: var(--eco-font);
+    font-weight: 600;
+    color: var(--eco-text);
+    font-family: var(--eco-font);
+
+}
+
+
+/* ✅ Style général pour tous les inputs et textarea ciblés */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="datetime-local"],
+input.form-check-input,
+input[type="number"],
+input[type="tel"],
+input[type="date"],
+input[class="form-control"],
+select#vehicule_id,
+textarea#preferences_personnalisees,
+textarea#adresse_postale {
+  border: 2px solid var(--eco-green);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  background-color: #fff;
+}
+
+/* ✅ Focus normal */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="datetime-local"]:focus,
+input.form-check-input:focus,
+input[type="number"]:focus,
+input[type="tel"]:focus,
+input[class="form-control"]:focus,
+select#vehicule_id:focus,
+textarea#preferences_personnalisees:focus,
+textarea#commentaire:focus,
+textarea#adresse_postale:focus {
+  outline: none;
+  border-color: var(--eco-green);
+  box-shadow: 0 0 0 0.2rem rgba(55, 147, 94, 0.25); /* ombre verte */
+}
+
+
+
+input[class="form-check-input"]:checked {
+    background-color: var(--eco-green);
+    border-color: var(--eco-green);
+}
+
+
+/* ✅ Compatibilité autoremplissage Chrome/Safari */
+input:-webkit-autofill {
+  box-shadow: 0 0 0px 1000px white inset !important; /* fond blanc */
+  -webkit-text-fill-color: #000 !important;          /* texte noir */
+  border: 2px solid var(--eco-green) !important;
+  border-radius: 1.5rem;
+  transition: background-color 5000s ease-in-out 0s;
+}
+select:-webkit-autofill {
+  box-shadow: 0 0 0px 1000px white inset !important;
+  -webkit-text-fill-color: #000 !important;
+  border: 2px solid var(--eco-green) !important;
+  border-radius: 1.5rem;
+  transition: background-color 5000s ease-in-out 0s;
+}
+textarea:-webkit-autofill {
+  box-shadow: 0 0 0px 1000px white inset !important;
+  -webkit-text-fill-color: #000 !important;
+  border: 2px solid var(--eco-green) !important;
+  border-radius: 1.5rem;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+
+
+
+
+/*Page de recherche(covoiturage)*/
+.custom-success {
+  background-color: var(--eco-bg); /* couleur de fond personnalisée */
+  box-shadow: 0 4px 10px rgba(0, 128, 0, 0.2); /* ombre douce en vert */
+  border: 1px solid #c3e6cb;
+  border-radius: 8px;
+}
+/* plusieyr fois */
+.alert-info {
+  background-color: rgb(214, 235, 214); /* couleur de fond personnalisée */
+  color: var(--eco-text) ;
+  box-shadow: 0 4px 10px rgba(12, 99, 12, 0.2) ;
+  border: 1px solid #c3e6cb ;
+  border-radius: 6px ;
+  width: 400px ;
+  margin: 20px auto ;
+  padding: 15px 20px ;
+}
+.alert-danger {
+  background-color: rgba(202, 6, 6, 0.1); /* fond rouge très clair avec transparence */
+  color: var(--eco-text); /* texte vert ou autre selon ta variable */
+  box-shadow: 0 4px 10px rgba(135, 4, 4, 0.2);
+  border: 1px solid rgba(110, 3, 17, 0.3); /* bord légèrement visible */
+  border-radius: 6px;
+  width: 500px;
+  margin: 20px auto;
+  padding: 15px 20px;
+  backdrop-filter: blur(2px); /* optionnel : effet de flou derrière */
+}
+
+
+
+
+.arrow-swap-btn {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  padding: 0;
+  margin: 0 20px;
+  color: var(--eco-green);
+  cursor: pointer;
+  align-self: center; /* centre verticalement dans flex */
+  transform: translateY(20px); /* ajuste selon ta hauteur */
+}
+
+
+  .arrow-swap-btn:hover {
+    color: var(--eco-green-dark); /* plus foncé au hover */
+  }
+
+
+
+    .arrow-swap-btn {
+      margin: 8px 0;
+    }
+
+/*Page de contact*/
+.text-center {
+    color: var(--eco-text);
+}
+.input-wrapper {
+  max-width: 400px; /* largeur max pour Email et Sujet */
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.input-wrapper.message {
+  max-width: 600px; /* plus large pour Message */
+}
+
+
+/*Page d'inscription*/
+.eco-link {
+    color: var(--eco-green)!important;
+    font-weight: 500;
+    text-decoration: underline;
+
+}
+
+.eco-link:hover {
+    color: var(--eco-green-dark); 
+    text-decoration: underline;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); 
+}
+
+.eco-checkbox:checked {
+    background-color: var(--eco-green);
+}
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(55, 147, 94, 0.25); /* vert avec opacité */
+    border-color: var(--eco-green);
+    outline: none;
+}
+
+/*Page de details*/
+.alert-warning {
+  background-color: var(--eco-bg); /* couleur de fond personnalisée */
+  color: var(--eco-text);
+  box-shadow: 0 4px 10px rgba(0, 128, 0, 0.2); /* ombre douce en vert */
+  border: 1px solid #c3e6cb;
+  border-radius: 8px;
+}
+.eco-box {
+        background-color: var(--eco-bg) !important; /* plusiers fois sur detail et mes trajets*/
+    }
+
+
+/*Footer et mentions legales*/
+footer {
+    color: var(--eco-dark);
+    border-top: 2px solid var(--eco-green);
+    position: relative;
+    width: 100%;
+}
+.footer-email {
+    text-decoration: underline;
+    color: var(--eco-green);
+    font-weight: 500;
+}
+
+.footer-separator {
+  border: none;                 /* On supprime toutes les bordures */
+  border-top: 1px solid #232222;   /* On remet juste une fine ligne grise */
+  width: 80px;                  /* Largeur réduite (ajuste comme tu veux) */
+  margin: 10px auto;            /* Centrer horizontalement + un peu d’espace vertical */
+}
+
+
+
+
+
+footer .nav-link {
+    font-family: Arial, Helvetica, sans-serif;
+    text-decoration: underline;
+    color: var(--eco-dark) !important;
+    transition: color 0.3s ease;
+}
+
+footer .nav-link:hover {
+    color: var(--eco-green-dark) !important;
+}
+
+
+.btn-close:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/*Page de details*/
+.btn-secondary {
+    font-family: var(--eco-font);
+    background-color: var(--eco-green);
+    color: white;
+    border: none;
+
+    /* Taille plus petite */
+    padding: 8px 12px;       /* moins de padding vertical et horizontal */
+    font-size: 0.85rem;      /* taille de police plus petite */
+    height: auto;            /* laisse la hauteur s'adapter au padding */
+
+    /* Margin pour espacer du footer */
+    margin-bottom: 20px;     /* espace en dessous du bouton */
+    
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.btn-secondary:hover {
+    background-color: var(--eco-green-dark);
+    box-shadow: 0 6px 10px rgba(14, 138, 65, 0.6);
+}
+
+

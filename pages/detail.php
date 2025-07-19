@@ -1,32 +1,32 @@
 <?php
-session_start(); // Toujours en premier
-
+session_start();
 require_once __DIR__ . '/../config/db.php';
 require_once '../templates/header.php';
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-// Récupération des infos utilisateur depuis la session
+// --- Récupération des informations utilisateur stockées en session ---
+// ID utilisateur connecté (ou null si non connecté)
+// Crédits utilisateur (pour réservation)
 $userId = isset($_SESSION['user_id']) ? (int) $_SESSION['user_id'] : null;
 $userCredits = $_SESSION['user_credits'] ?? 0;
 
-// Vérification de l'ID du trajet
+// --- Validation de l'ID du trajet passé en GET ---
+// On vérifie que l'id est bien présent et est un entier positif
+// Affichage d'un message d'erreur et arrêt du script en chargeant le footer
 if (!isset($_GET['id']) || !is_numeric($_GET['id']) || (int)$_GET['id'] <= 0) {
     require_once '../templates/footer.php';
     exit('<div class="alert alert-danger text-center my-3">ID du trajet invalide.</div>');
 }
-
 $id = (int) $_GET['id'];
 
+// Fonction utilitaire d'affichage d'erreur avec arrêt et inclusion du footer
 function afficherErreur(string $msg) {
     echo "<div class='alert alert-danger text-center my-3'>" . htmlspecialchars($msg) . "</div>";
     require_once '../templates/footer.php';
     exit;
 }
 
+// --- Requête principale pour récupérer les infos du trajet, conducteur et véhicule ---
 try {
-    // Récupération des infos du trajet + conducteur + véhicule
     $stmt = $pdo->prepare("
         SELECT c.*, u.pseudo, u.email, u.id AS conducteur_id, u.photo_profil,
                v.marque, v.modele, v.couleur, v.energie
@@ -39,21 +39,22 @@ try {
     $stmt->execute(['id' => $id]);
     $trajet = $stmt->fetch(PDO::FETCH_ASSOC);
 
+// Si aucun trajet trouvé, on affiche une erreur
     if (!$trajet) {
         afficherErreur("Trajet introuvable.");
     }
 
-    // Dates et heures formatées
+// --- Formatage des dates/heures pour affichage ---
     $date = new DateTime($trajet['date_depart']);
     $heureDepart = new DateTime($trajet['heure_depart']);
     $heureArrivee = new DateTime($trajet['heure_arrivee']);
 
-    // Préférences du conducteur
+// --- Récupération des préférences du conducteur ---
     $stmtPrefs = $pdo->prepare("SELECT * FROM preferences_conducteurs WHERE conducteur_id = :id LIMIT 1");
     $stmtPrefs->execute(['id' => $trajet['conducteur_id']]);
     $prefs = $stmtPrefs->fetch(PDO::FETCH_ASSOC);
 
-    // Avis sur le conducteur
+// --- Récupération des avis sur le conducteur ---
     $stmtAvis = $pdo->prepare("
         SELECT a.commentaire, a.note, a.date_avis, u.pseudo AS auteur
         FROM avis a
@@ -64,19 +65,22 @@ try {
     $stmtAvis->execute(['id' => $trajet['conducteur_id']]);
     $avis = $stmtAvis->fetchAll(PDO::FETCH_ASSOC);
 
-    // Vérification si utilisateur déjà inscrit à ce trajet
+// --- Vérification si l'utilisateur connecté est déjà inscrit à ce trajet ---
     $dejaInscrit = false;
     if ($userId) {
         $check = $pdo->prepare("SELECT COUNT(*) FROM participations WHERE utilisateur_id = :uid AND covoiturage_id = :cid");
         $check->execute(['uid' => $userId, 'cid' => $id]);
         $dejaInscrit = (bool) $check->fetchColumn();
     }
+
+// En cas d'erreur SQL, on loggue l'erreur et affiche un message générique
 } catch (PDOException $e) {
     error_log('Erreur PDO : ' . $e->getMessage());
     afficherErreur("Une erreur technique est survenue.");
 }
 ?>
 
+<!-- --- Affichage selon inscription de l'utilisateur --- -->
 <?php if ($dejaInscrit): ?>
     <div class="alert alert-info text-center my-3">
         Vous participez déjà à ce trajet.
@@ -85,13 +89,14 @@ try {
             <button type="submit" class="btn btn-danger">Annuler ma participation</button>
         </form>
     </div>
-    <?php else: ?>
-        <?php if ($trajet['statut'] !== 'termine'): ?>
-            <h2 class="text-center mt-1">En route vers un trajet plus vert 🥝</h2>
-        <?php endif; ?>
+<?php else: ?>
+    <?php if ($trajet['statut'] !== 'termine'): ?>
+        <h2 class="text-center mt-1">En route vers un trajet plus vert 🥝</h2>
     <?php endif; ?>
+<?php endif; ?>
 
 
+<!-- --- Détails du trajet, préférences, avis --- -->
 <div class="container my-5">
     <div class="row">
 
@@ -113,7 +118,7 @@ try {
             </div>
         </div>
 
-        <!-- Préférences -->
+        <!-- Préférences conducteur -->
         <div class="col-md-4 mb-4">
             <div class="card eco-box p-3 shadow-sm h-100">
                 <h4 class="text-center mb-3">Préférences du conducteur</h4>
@@ -131,7 +136,7 @@ try {
             </div>
         </div>
 
-        <!-- Avis -->
+        <!-- Avis conducteur -->
         <div class="col-md-4 mb-4">
             <div class="card eco-box p-3 shadow-sm h-100">
                 <h4 class="text-center mb-3">Avis du conducteur</h4>
@@ -153,17 +158,20 @@ try {
 
     </div>
 
-    <!-- BOUTONS ACTIONS -->
+    <!-- --- Bouton participation / gestion trajet --- -->
     <div class="text-center mt-4">
+
+        <!-- Utilisateur non connecté -->
         <?php if (!$userId): ?>
             <div class="alert alert-info">Connectez-vous pour réserver ce trajet.</div>
             <a href="connexion.php" class="btn custom-btn mx-2">Se connecter</a>
             <a href="inscription.php" class="btn custom-btn mx-2">Créer un compte</a>
 
+        <!-- Conducteur du trajet -->
         <?php elseif ($userId === (int)$trajet['conducteur_id']): ?>
 
             <?php if ($trajet['statut'] !== 'termine'): ?>
-                <!-- Boutons conducteur (Annuler + changer statut) -->
+                <!-- Boutons de gestion du trajet par le conducteur -->
                 <form action="../config/annuler_trajet.php" method="post" class="d-inline-block me-3">
                     <input type="hidden" name="role" value="chauffeur">
                     <input type="hidden" name="trajet_id" value="<?= htmlspecialchars($id) ?>">
@@ -192,8 +200,11 @@ try {
                 <a href="mes_trajets.php" class="btn custom-btn">← Retour à mes trajets</a>
             </div>
 
+        <!-- Utilisateur non inscrit au trajet -->
         <?php elseif (!$dejaInscrit): ?>
+
             <?php
+            // Gestion des conditions pour afficher ou non le bouton de participation
             if ($trajet['places_disponibles'] <= 0) {
                 echo '<div class="alert alert-danger">Aucune place disponible.</div>';
             } elseif ($userCredits < $trajet['prix']) {
@@ -209,7 +220,7 @@ try {
         <?php endif; ?>
     </div>
 
-    <!-- Modal participation -->
+    <!-- --- Modal confirmation participation --- -->
     <?php if ($userId && !$dejaInscrit && $trajet['places_disponibles'] > 0 && $userCredits >= $trajet['prix']): ?>
         <div class="modal fade" id="confirmParticipationModal" tabindex="-1" aria-labelledby="confirmParticipationModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -235,36 +246,42 @@ try {
     <?php endif; ?>
 </div>
 
+<!-- --- Liste des passagers visible pour le conducteur --- -->
 <?php if ($userId && $userId === (int)$trajet['conducteur_id']): ?>
     <div class="container mb-5 my-1" style="max-width: 600px;">
         <div class="card eco-box shadow-sm">
             <div class="card-header text-white" style="background-color: var(--eco-green); font-family: var(--eco-font);">
                 <h5 class="mb-0">🐸 Passagers inscrits à ce trajet</h5>
             </div>
-            <div class="card-body">
+            <ul class="list-group list-group-flush">
                 <?php
                 $stmtPassagers = $pdo->prepare("
-                    SELECT u.pseudo, u.email
+                    SELECT u.pseudo, u.photo_profil, p.date_inscription
                     FROM participations p
                     JOIN utilisateurs u ON p.utilisateur_id = u.id
-                    WHERE p.covoiturage_id = :trajet_id
+                    WHERE p.covoiturage_id = :id
+                    ORDER BY p.date_inscription DESC
                 ");
-                $stmtPassagers->execute(['trajet_id' => $id]);
+                $stmtPassagers->execute(['id' => $id]);
                 $passagers = $stmtPassagers->fetchAll(PDO::FETCH_ASSOC);
-                ?>
 
-                <?php if (count($passagers) > 0): ?>
-                    <ul class="list-group">
-                        <?php foreach ($passagers as $p): ?>
-                            <li class="list-group-item eco-box">
-                                <?= htmlspecialchars($p['pseudo']) ?> (<?= htmlspecialchars($p['email']) ?>)
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                <?php else: ?>
-                    <p>Aucun passager inscrit pour le moment.</p>
-                <?php endif; ?>
-            </div>
+                if ($passagers):
+                    foreach ($passagers as $passager):
+                ?>
+                    <li class="list-group-item eco-box d-flex align-items-center">
+                        <img src="../public/photo_profil/<?= htmlspecialchars($passager['photo_profil'] ?: 'default.png') ?>" alt="Profil" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                        <div>
+                            <strong><?= htmlspecialchars($passager['pseudo']) ?></strong><br>
+                            <small>Inscrit le <?= date('d/m/Y', strtotime($passager['date_inscription'])) ?></small>
+                        </div>
+                    </li>
+                <?php
+                    endforeach;
+                else:
+                    echo '<li class="list-group-item eco-box">Aucun passager inscrit.</li>';
+                endif;
+                ?>
+            </ul>
         </div>
     </div>
 <?php endif; ?>

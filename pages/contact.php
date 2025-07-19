@@ -4,7 +4,7 @@ require_once '../templates/header.php';
 ?>
 
 <main class="flex-grow-1 container my-2 mb-5">
-  <h2 class="text-center mb-2">Une question ? Un message ? On est là pour vous! 🌱</h2>
+  <h3 class="text-center mb-2">Une question ? Un message ? On est là pour vous! 🌱</h3>
 <form action="../config/traitement_contact.php" method="POST" class="row g-2">
     <div class="col-12 d-flex justify-content-center">
       <div class="input-wrapper">

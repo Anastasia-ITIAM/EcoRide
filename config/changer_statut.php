@@ -1,12 +1,8 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 session_start();
+
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/../includes/mailer.php';
-
-
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $trajetId = $_POST['trajet_id'] ?? null;
@@ -27,11 +23,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Trajet introuvable ou non autorisé.");
     }
 
-    // Met à jour le statut
+    // Met à jour le statut du trajet
     $stmtUpdate = $pdo->prepare("UPDATE covoiturages SET statut = :statut WHERE id = :id");
     $stmtUpdate->execute(['statut' => $nouveauStatut, 'id' => $trajetId]);
 
-    // Si le trajet est terminé, notifier les passagers
+    // Si le trajet est terminé, notifier tous les passagers par email via PHPMailer
     if ($nouveauStatut === 'termine') {
         $stmtPassagers = $pdo->prepare("
             SELECT u.email, u.pseudo 
@@ -43,15 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $passagers = $stmtPassagers->fetchAll();
 
         foreach ($passagers as $passager) {
-            // Ici tu peux utiliser mail() ou une lib comme PHPMailer
-            mail(
-                $passager['email'],
-                "Merci pour votre trajet",
-                "Bonjour {$passager['pseudo']},\nMerci pour votre participation.\nMerci de vous connecter à votre espace pour valider le bon déroulement du trajet."
-            );
+            envoyerEmailParticipant($passager['email'], $passager['pseudo']);
         }
     }
 
+    // Redirection vers la page détail du trajet
     header("Location: ../pages/detail.php?id=$trajetId");
     exit;
 }

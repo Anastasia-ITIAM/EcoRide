@@ -43,7 +43,7 @@ require_once 'templates/header.php';
 
         <!-- Formulaire de recherche -->
         <div class="col-lg-6">
-            <h3 class="text-center mb-3">Trouvez votre prochain trajet en toute simplicité !</h3>
+            <h3 class="text-center mb-1">Trouvez votre prochain trajet en toute simplicité !</h3>
 
             <form class="row g-3" action="pages/recherche.php" method="GET">
                 <div class="col-12">

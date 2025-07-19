@@ -165,20 +165,20 @@ try {
 
             <?php if ($trajet['statut'] !== 'termine'): ?>
                 <!-- Boutons conducteur (Annuler + changer statut) -->
-                <form action="../config/annuler_trajet.php" method="post" class="d-inline-block me-3">
+                <form action="../config/annuler_trajet.php" method="post" class="d-inline-block me-2">
                     <input type="hidden" name="role" value="chauffeur">
                     <input type="hidden" name="trajet_id" value="<?= htmlspecialchars($id) ?>">
                     <button type="submit" class="btn btn-danger">Annuler le trajet</button>
                 </form>
 
                 <?php if ($trajet['statut'] === 'prévu'): ?>
-                    <form action="../config/changer_statut.php" method="post" class="d-inline-block me-3">
+                    <form action="../config/changer_statut.php" method="post" class="d-inline-block me-2">
                         <input type="hidden" name="trajet_id" value="<?= htmlspecialchars($id) ?>">
                         <input type="hidden" name="nouveau_statut" value="en_cours">
                         <button type="submit" class="btn custom-btn">🚗 Démarrer le covoiturage</button>
                     </form>
                 <?php elseif ($trajet['statut'] === 'en_cours'): ?>
-                    <form action="../config/changer_statut.php" method="post" class="d-inline-block me-3">
+                    <form action="../config/changer_statut.php" method="post" class="d-inline-block me-2">
                         <input type="hidden" name="trajet_id" value="<?= htmlspecialchars($id) ?>">
                         <input type="hidden" name="nouveau_statut" value="termine">
                         <button type="submit" class="btn custom-btn">✅ Arrivée à destination</button>
@@ -189,7 +189,7 @@ try {
                 <div class="alert alert-info text-center mb-3">Trajet terminé ✅</div>
             <?php endif; ?>
 
-            <div class="text-center">
+            <div class="text-center mt-4">
                 <a href="mes_trajets.php" class="btn custom-btn">← Retour à mes trajets</a>
             </div>
 
@@ -237,7 +237,7 @@ try {
 </div>
 
 <?php if ($userId && $userId === (int)$trajet['conducteur_id']): ?>
-    <div class="container mb-5 my-1" style="max-width: 600px;">
+    <div class="container mb-5" style="max-width: 600px;">
         <div class="card eco-box shadow-sm">
             <div class="card-header text-white" style="background-color: var(--eco-green); font-family: var(--eco-font);">
                 <h5 class="mb-0">🐸 Passagers inscrits à ce trajet</h5>

@@ -70,82 +70,86 @@ $trajets_problemes = $stmtProblemes->fetchAll();
 
     <h4 class="mt-5">📝 Avis en attente</h4>
     <?php if ($avis_en_attente): ?>
-        <table class="table table-bordered mt-3">
-            <thead>
-                <tr>
-                    <th>Auteur</th>
-                    <th>Note</th>
-                    <th>Commentaire</th>
-                    <th>Trajet</th>
-                    <th>Date</th>
-                    <th>Conducteur</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($avis_en_attente as $avis): ?>
+        <div class="table-responsive">
+            <table class="table table-bordered mt-3">
+                <thead>
                     <tr>
-                        <td><?= htmlspecialchars($avis['auteur']) ?></td>
-                        <td><?= (int)$avis['note'] ?>/5</td>
-                        <td><?= nl2br(htmlspecialchars($avis['commentaire'])) ?></td>
-                        <td>#<?= $avis['trajet_id'] ?><br>
-                            <?= htmlspecialchars($avis['adresse_depart']) ?> → <?= htmlspecialchars($avis['adresse_arrivee']) ?><br>
-                            <?= htmlspecialchars($avis['date_depart']) ?> à <?= htmlspecialchars($avis['heure_depart']) ?>
-                        </td>
-                        <td><?= $avis['date_validation'] ?? '—' ?></td>
-                        <td>
-                            <?= htmlspecialchars($avis['conducteur_pseudo']) ?><br>
-                            <small><?= htmlspecialchars($avis['conducteur_email']) ?></small>
-                        </td>
-                        <td>
-                            <form method="post" class="d-flex gap-2">
-                                <input type="hidden" name="avis_id" value="<?= $avis['id'] ?>">
-                                <button type="submit" name="action" value="valider" class="btn btn-success btn-sm">Valider</button>
-                                <button type="submit" name="action" value="refuser" class="btn btn-danger btn-sm">Refuser</button>
-                            </form>
-                        </td>
+                        <th>Auteur</th>
+                        <th>Note</th>
+                        <th>Commentaire</th>
+                        <th>Trajet</th>
+                        <th>Date</th>
+                        <th>Conducteur</th>
+                        <th>Actions</th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php foreach ($avis_en_attente as $avis): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($avis['auteur']) ?></td>
+                            <td><?= (int)$avis['note'] ?>/5</td>
+                            <td><?= nl2br(htmlspecialchars($avis['commentaire'])) ?></td>
+                            <td>#<?= $avis['trajet_id'] ?><br>
+                                <?= htmlspecialchars($avis['adresse_depart']) ?> → <?= htmlspecialchars($avis['adresse_arrivee']) ?><br>
+                                <?= htmlspecialchars($avis['date_depart']) ?> à <?= htmlspecialchars($avis['heure_depart']) ?>
+                            </td>
+                            <td><?= $avis['date_validation'] ?? '—' ?></td>
+                            <td>
+                                <?= htmlspecialchars($avis['conducteur_pseudo']) ?><br>
+                                <small><?= htmlspecialchars($avis['conducteur_email']) ?></small>
+                            </td>
+                            <td>
+                                <form method="post" class="d-flex gap-2">
+                                    <input type="hidden" name="avis_id" value="<?= $avis['id'] ?>">
+                                    <button type="submit" name="action" value="valider" class="btn btn-success btn-sm">Valider</button>
+                                    <button type="submit" name="action" value="refuser" class="btn btn-danger btn-sm">Refuser</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     <?php else: ?>
         <p>Aucun avis à modérer pour le moment.</p>
     <?php endif; ?>
 
     <h4 class="mt-5">🚨 Trajets signalés ou problématiques</h4>
     <?php if ($trajets_problemes): ?>
-        <table class="table table-striped mt-3">
-            <thead>
-                <tr>
-                    <th>#Trajet</th>
-                    <th>Date Départ</th>
-                    <th>Date Arrivée</th>
-                    <th>Lieu Départ</th>
-                    <th>Lieu Arrivée</th>
-                    <th>Conducteur</th>
-                    <th>Passager</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($trajets_problemes as $t): ?>
+        <div class="table-responsive">
+            <table class="table table-striped mt-3">
+                <thead>
                     <tr>
-                        <td><?= $t['trajet_id'] ?></td>
-                        <td><?= $t['date_depart'] ?></td>
-                        <td><?= $t['date_arrivee'] ?></td>
-                        <td><?= htmlspecialchars($t['lieu_depart']) ?></td>
-                        <td><?= htmlspecialchars($t['lieu_arrivee']) ?></td>
-                        <td>
-                            <?= htmlspecialchars($t['conducteur_pseudo']) ?><br>
-                            <small><?= htmlspecialchars($t['conducteur_email']) ?></small>
-                        </td>
-                        <td>
-                            <?= htmlspecialchars($t['passager_pseudo']) ?><br>
-                            <small><?= htmlspecialchars($t['passager_email']) ?></small>
-                        </td>
+                        <th>#Trajet</th>
+                        <th>Date Départ</th>
+                        <th>Date Arrivée</th>
+                        <th>Lieu Départ</th>
+                        <th>Lieu Arrivée</th>
+                        <th>Conducteur</th>
+                        <th>Passager</th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php foreach ($trajets_problemes as $t): ?>
+                        <tr>
+                            <td><?= $t['trajet_id'] ?></td>
+                            <td><?= $t['date_depart'] ?></td>
+                            <td><?= $t['date_arrivee'] ?></td>
+                            <td><?= htmlspecialchars($t['lieu_depart']) ?></td>
+                            <td><?= htmlspecialchars($t['lieu_arrivee']) ?></td>
+                            <td>
+                                <?= htmlspecialchars($t['conducteur_pseudo']) ?><br>
+                                <small><?= htmlspecialchars($t['conducteur_email']) ?></small>
+                            </td>
+                            <td>
+                                <?= htmlspecialchars($t['passager_pseudo']) ?><br>
+                                <small><?= htmlspecialchars($t['passager_email']) ?></small>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     <?php else: ?>
         <p>Aucun trajet signalé ou problématique pour l’instant.</p>
     <?php endif; ?>

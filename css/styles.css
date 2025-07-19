@@ -74,6 +74,8 @@ a.dropdown-toggle::after {
     color: white;
     border: none;
     border-radius: 6px;
+    width: auto !important;
+    display: inline-block !important;
 }
 .custom-btn:hover {
     background-color: var(--eco-green-dark);
@@ -331,6 +333,9 @@ footer .nav-link:hover {
     margin-right: 0 !important;
   }
 }
+
+
+
 
 
 

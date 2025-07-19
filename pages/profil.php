@@ -159,6 +159,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['publier_trajet'])) {
                     <a href="/EcoRide/employe/moderation_avis.php" class="btn custom-btn">Espace Employé</a>
                 <?php endif; ?>
 
+                <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'administrateur'): ?>
+                    <a href="/EcoRide/admin/espace_admin.php" class="btn custom-btn">Espace Admin</a>
+                <?php endif; ?>    
+
                 <?php if ($user['role'] !== 'chauffeur' && $user['role'] !== 'passager_chauffeur'): ?>
                     <a href="devenir_chauffeur.php" class="btn custom-btn">Devenir chauffeur</a>
                 <?php else: ?>
@@ -239,7 +243,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['publier_trajet'])) {
                 </div>
             </form>
         </div>
-    </div>
+    </div> <!-- fin row -->
 </div>
+
 
 <?php require_once '../templates/footer.php'; ?>

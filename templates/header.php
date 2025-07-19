@@ -13,25 +13,25 @@ if (session_status() === PHP_SESSION_NONE) {
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap" rel="stylesheet" />
     <link rel="icon" type="image/svg+xml" href="/EcoRide/assets/logo.svg" />
 </head>
-<body>  <!-- OUBLIE PAS LE BODY -->
+<body>  
 
 <header class="py-3 mb-4 border-bottom">
     <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between text-center text-md-start gap-3">
 
-        <!-- LOGO -->
+        <!-- Logo -->
         <a href="/EcoRide/index.php" class="logo-container text-decoration-none">
             <img src="/EcoRide/assets/logo.svg" alt="Logo d'EcoRide" width="40" height="40">
             <span class="brand-name">EcoRide</span>
         </a>
 
-        <!-- NAVIGATION -->
+        <!-- Navigation -->
         <ul class="nav mx-auto">
             <li><a href="/EcoRide/index.php" class="nav-link px-3">Accueil</a></li>
             <li><a href="/EcoRide/pages/recherche.php" class="nav-link px-3">Covoiturages</a></li>
             <li><a href="/EcoRide/pages/contact.php" class="nav-link px-3">Contacts</a></li>
         </ul>
 
-        <!-- UTILISATEUR CONNECTÉ -->
+        <!-- Utilisateur connecté -->
         <?php if (isset($_SESSION['user_pseudo'])): ?>
             <div class="d-flex align-items-center gap-2">
                 <span class="eco-text fw-semibold" style="font-family: var(--eco-font); color: var(--eco-text);">

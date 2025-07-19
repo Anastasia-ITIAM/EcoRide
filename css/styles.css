@@ -309,27 +309,4 @@ footer .nav-link:hover {
     box-shadow: none;
 }
 
-/*Page de details*/
-.btn-secondary {
-    font-family: var(--eco-font);
-    background-color: var(--eco-green);
-    color: white;
-    border: none;
-
-    /* Taille plus petite */
-    padding: 8px 12px;       /* moins de padding vertical et horizontal */
-    font-size: 0.85rem;      /* taille de police plus petite */
-    height: auto;            /* laisse la hauteur s'adapter au padding */
-
-    /* Margin pour espacer du footer */
-    margin-bottom: 20px;     /* espace en dessous du bouton */
-    
-    transition: background-color 0.3s, box-shadow 0.3s;
-}
-
-.btn-secondary:hover {
-    background-color: var(--eco-green-dark);
-    box-shadow: 0 6px 10px rgba(14, 138, 65, 0.6);
-}
-
 

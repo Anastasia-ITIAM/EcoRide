@@ -14,7 +14,7 @@ if (!$trajetId || !is_numeric($trajetId)) {
     die("ID trajet invalide.");
 }
 
-// 🔍 Vérifie s’il existe déjà une validation
+// Vérifie s’il existe déjà une validation
 $stmtCheck = $pdo->prepare("
     SELECT v.id AS validation_id, v.statut, v.commentaire, v.note, p.id AS participation_id
     FROM validation_trajet v
@@ -25,7 +25,7 @@ $stmtCheck->execute(['trajetId' => $trajetId, 'userId' => $userId]);
 $validation = $stmtCheck->fetch();
 
 if (!$validation) {
-    // 🔍 Vérifie que l'utilisateur est bien passager sur un trajet terminé
+    //  Vérifie que l'utilisateur est bien passager sur un trajet terminé
     $stmtParticipation = $pdo->prepare("
         SELECT p.id AS participation_id
         FROM participations p
@@ -43,7 +43,7 @@ if (!$validation) {
 
     $participationId = $participation['participation_id'];
 } else {
-    // ✅ Déjà validé ?
+    // Déjà validé ?
     if ($validation['statut'] === 'valide') {
         $_SESSION['message'] = "Vous avez déjà validé ce trajet.";
         header("Location: mes_trajets.php");
@@ -53,7 +53,7 @@ if (!$validation) {
     $participationId = $validation['participation_id'];
 }
 
-// 📤 Traitement du formulaire
+// Traitement du formulaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $commentaire = trim($_POST['commentaire'] ?? '');
     $note = isset($_POST['note']) && is_numeric($_POST['note']) ? intval($_POST['note']) : null;
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($validation) {
-        // 🔁 Mise à jour d'une validation existante
+        // Mise à jour d'une validation existante
         $stmtUpdate = $pdo->prepare("
             UPDATE validation_trajet 
             SET statut = 'valide', commentaire = :commentaire, note = :note, date_validation = NOW()
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'id' => $validation['validation_id']
         ]);
     } else {
-        // ➕ Insertion d'une nouvelle validation
+        // Insertion d'une nouvelle validation
         $stmtInsert = $pdo->prepare("
             INSERT INTO validation_trajet 
             (covoiturage_id, utilisateur_id, statut, commentaire, note, date_validation) 
@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
     }
 
-    // ✅ Mise à jour participation
+    //  Mise à jour participation
     $stmtUpdateParticipation = $pdo->prepare("
         UPDATE participations 
         SET est_valide = 1 
@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 require_once '../templates/header.php';
 ?>
 
-<!-- 🖋️ Formulaire de validation -->
+<!-- Formulaire de validation -->
 <div class="container my-4">
     <h2 class="text-center mb-4">Valider le trajet ✅</h2>
     <p class="lead text-center">Merci d’avoir voyagé avec EcoRide 🌱. Vous pouvez confirmer que le trajet s’est bien déroulé et laisser un avis.</p>

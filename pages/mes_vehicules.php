@@ -3,9 +3,6 @@ session_start();
 require_once '../config/db.php';
 require_once '../config/auth.php';
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 if (!isset($_SESSION['user_id'])) {
     header('Location: connexion.php');
     exit;
@@ -13,6 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $userId = $_SESSION['user_id'];
 
+// Récupérer le rôle de l'utilisateur
 $stmt = $pdo->prepare("SELECT role FROM utilisateurs WHERE id = :id");
 $stmt->execute(['id' => $userId]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -22,12 +20,15 @@ if (!$user) {
     exit;
 }
 
+// Vérification des droits d'accès : uniquement chauffeurs ou passager_chauffeur
 if ($user['role'] !== 'chauffeur' && $user['role'] !== 'passager_chauffeur') {
     echo "Accès refusé : vous n'êtes pas autorisé.";
     exit;
 }
 
+// Gestion des requêtes POST (ajout, modification, suppression de véhicule)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Mise à jour d'un véhicule existant
     if (isset($_POST['update_vehicle'])) {
         $plaque = trim($_POST['plaque']);
         $date = $_POST['date_immatriculation'];
@@ -38,11 +39,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $places = (int)$_POST['places_disponibles'];
 
         $errors = [];
+        // Vérification des champs obligatoires
         if (!$plaque || !$date || !$marque || !$modele || $places < 1) {
             $errors[] = "Tous les champs obligatoires doivent être remplis.";
         }
 
         if (empty($errors)) {
+            // Mise à jour en base
             $stmt = $pdo->prepare("UPDATE vehicules SET date_immatriculation=?, marque=?, modele=?, couleur=?, energie=?, places_disponibles=? WHERE utilisateur_id=? AND plaque=?");
             $stmt->execute([$date, $marque, $modele, $couleur, $energie, $places, $userId, $plaque]);
             $_SESSION['message'] = "Véhicule mis à jour.";
@@ -54,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    // Suppression d'un véhicule
     if (isset($_POST['delete_vehicle'])) {
         $plaque = trim($_POST['plaque']);
         if ($plaque) {
@@ -66,6 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    // Ajout d'un nouveau véhicule
     if (isset($_POST['add_vehicle'])) {
         $plaque = trim($_POST['new_plaque']);
         $date = $_POST['new_date_immatriculation'];
@@ -75,15 +80,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $energie = trim($_POST['new_energie']);
         $places = (int)$_POST['new_places_disponibles'];
 
+        // Préférences spécifiques
         $fumeur = isset($_POST['new_fumeur']) ? 1 : 0;
         $animaux = isset($_POST['new_animaux_acceptes']) ? 1 : 0;
         $preferences = trim($_POST['new_preferences_personnalisees']);
 
         $errors = [];
+        // Vérification des champs obligatoires
         if (!$plaque || !$date || !$marque || !$modele || $places < 1) {
             $errors[] = "Veuillez remplir tous les champs obligatoires.";
         }
 
+        // Vérification doublon plaque
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM vehicules WHERE utilisateur_id=? AND plaque=?");
         $stmt->execute([$userId, $plaque]);
         if ($stmt->fetchColumn() > 0) {
@@ -94,9 +102,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 $pdo->beginTransaction();
 
+                // Insertion du véhicule
                 $stmt = $pdo->prepare("INSERT INTO vehicules (utilisateur_id, plaque, date_immatriculation, marque, modele, couleur, energie, places_disponibles) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
                 $stmt->execute([$userId, $plaque, $date, $marque, $modele, $couleur, $energie, $places]);
 
+                // Mise à jour ou insertion des préférences du conducteur
                 $stmt = $pdo->prepare("SELECT COUNT(*) FROM preferences_conducteurs WHERE conducteur_id = ?");
                 $stmt->execute([$userId]);
                 if ($stmt->fetchColumn()) {
@@ -122,13 +132,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// Récupération du message flash
 $message = $_SESSION['message'] ?? '';
 unset($_SESSION['message']);
 
+// Récupération des véhicules de l'utilisateur
 $stmt = $pdo->prepare("SELECT * FROM vehicules WHERE utilisateur_id = :id");
 $stmt->execute(['id' => $userId]);
 $vehicules = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Récupération des préférences du conducteur 
 $stmt = $pdo->prepare("SELECT * FROM preferences_conducteurs WHERE conducteur_id = :id");
 $stmt->execute(['id' => $userId]);
 $preferences = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -139,10 +152,12 @@ $preferences = $stmt->fetch(PDO::FETCH_ASSOC);
 <div class="container my-4" style="max-width:900px;">
     <h2 class="text-center mb-4">Mes véhicules 🧩</h2>
 
+    <!-- Affichage message utilisateur -->
     <?php if ($message): ?>
         <div class="alert alert-info"><?= $message ?></div>
     <?php endif; ?>
 
+    <!-- Affichage liste des véhicules à modifier -->
     <?php if (!$vehicules): ?>
         <div class="alert alert-info text-center">Aucun véhicule ajouté.</div>
     <?php else: ?>
@@ -155,7 +170,8 @@ $preferences = $stmt->fetch(PDO::FETCH_ASSOC);
                 <div class="row">
                     <div class="col-md-6 mb-2">
                         <label>Plaque</label>
-                        <input class="form-control" value="<?= htmlspecialchars($v['plaque']) ?>" required value>
+                        <!-- Le champ plaque est affiché mais sans name, donc non modifiable par l'utilisateur -->
+                        <input class="form-control" value="<?= htmlspecialchars($v['plaque']) ?>" readonly>
                     </div>
                     <div class="col-md-6 mb-2">
                         <label>Date immatriculation *</label>
@@ -192,6 +208,7 @@ $preferences = $stmt->fetch(PDO::FETCH_ASSOC);
                 <button type="submit" class="btn custom-btn">Enregistrer</button>
             </form>
 
+            <!-- Formulaire suppression véhicule -->
             <form method="post" class="mb-4 text-center">
                 <input type="hidden" name="delete_vehicle" value="1">
                 <input type="hidden" name="plaque" value="<?= htmlspecialchars($v['plaque']) ?>">
@@ -202,6 +219,7 @@ $preferences = $stmt->fetch(PDO::FETCH_ASSOC);
 
     <hr>
 
+    <!-- Formulaire ajout nouveau véhicule -->
     <h4 class="text-center">Ajouter un nouveau véhicule</h4>
     <form method="post" class="card p-3 shadow-sm eco-box">
         <input type="hidden" name="add_vehicle" value="1">

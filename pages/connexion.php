@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../config/db.php'; // Connexion à la BDD
+require_once '../config/db.php'; 
 require_once '../templates/header.php';
 
 error_reporting(E_ALL);
@@ -8,7 +8,6 @@ ini_set('display_errors', 1);
 
 $erreur = '';
 
-// Enregistrer la page précédente si elle est fournie en GET
 if (isset($_GET['redirect'])) {
     $_SESSION['redirect_after_login'] = $_GET['redirect'];
 }

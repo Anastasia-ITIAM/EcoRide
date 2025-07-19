@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 require_once '../config/db.php';
 require_once '../config/auth.php';
 
@@ -11,29 +12,36 @@ if (!isset($_SESSION['user_id'])) {
 $userId = $_SESSION['user_id'];
 $message = '';
 
-// Récupération des infos utilisateur
+// --- Récupération des infos utilisateur ---
 $stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE id = :id");
 $stmt->execute(['id' => $userId]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
-if (!$user) { exit('Utilisateur non trouvé.'); }
 
-// Vérif profil complet
-$champs_obligatoires = ['prenom', 'nom_famille', 'date_naissance', 'adresse_postale', 'telephone'];
-$profil_complet = true;
-foreach ($champs_obligatoires as $champ) {
-    if (empty($user[$champ])) { $profil_complet = false; break; }
+if (!$user) {
+    exit('Utilisateur non trouvé.');
 }
 
-// Traitement du formulaire de mise à jour profil
+// --- Vérification profil complet ---
+$requiredFields = ['prenom', 'nom_famille', 'date_naissance', 'adresse_postale', 'telephone'];
+$profilComplet = true;
+foreach ($requiredFields as $field) {
+    if (empty($user[$field])) {
+        $profilComplet = false;
+        break;
+    }
+}
+
+// --- Traitement formulaire mise à jour profil ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['publier_trajet'])) {
-    $email = $_POST['email'] ?? '';
-    $pseudo = $_POST['pseudo'] ?? '';
-    $prenom = trim($_POST['prenom'] ?? '');
-    $nom_famille = trim($_POST['nom_famille'] ?? '');
+    // Récupération des données POST
+    $email          = $_POST['email'] ?? '';
+    $pseudo         = $_POST['pseudo'] ?? '';
+    $prenom         = trim($_POST['prenom'] ?? '');
+    $nom_famille    = trim($_POST['nom_famille'] ?? '');
     $date_naissance = $_POST['date_naissance'] ?? '';
-    $adresse_postale = trim($_POST['adresse_postale'] ?? '');
-    $telephone = trim($_POST['telephone'] ?? '');
-    $password = $_POST['password'] ?? '';
+    $adresse_postale= trim($_POST['adresse_postale'] ?? '');
+    $telephone      = trim($_POST['telephone'] ?? '');
+    $password       = $_POST['password'] ?? '';
     $password_confirm = $_POST['password_confirm'] ?? '';
 
     // Validation basique
@@ -42,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['publier_trajet'])) {
     } elseif ($password !== '' && $password !== $password_confirm) {
         $message = "Les mots de passe ne correspondent pas.";
     } else {
-        // Upload photo
+        // Gestion upload photo
         if (isset($_FILES['photo_profil']) && $_FILES['photo_profil']['error'] === UPLOAD_ERR_OK) {
             $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
             if (in_array($_FILES['photo_profil']['type'], $allowedTypes)) {
@@ -52,8 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['publier_trajet'])) {
                 }
                 $filename = uniqid() . '_' . basename($_FILES['photo_profil']['name']);
                 $targetFile = $uploadDir . $filename;
+
                 if (move_uploaded_file($_FILES['photo_profil']['tmp_name'], $targetFile)) {
-                    // Supprimer ancienne photo si existe
+                    // Suppression ancienne photo si existante
                     if ($user['photo_profil'] && file_exists('../' . $user['photo_profil'])) {
                         unlink('../' . $user['photo_profil']);
                     }
@@ -65,11 +74,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['publier_trajet'])) {
                 $message = "Format de photo non supporté (jpg, png, gif uniquement).";
             }
         } else {
+            // Si aucune nouvelle photo uploadée, garder l'ancienne
             $photoPath = $user['photo_profil'];
         }
 
+        // Si pas d'erreur, mise à jour base
         if ($message === '') {
-            $sql = "UPDATE utilisateurs SET email = :email, pseudo = :pseudo, photo_profil = :photo_profil, prenom = :prenom, nom_famille = :nom_famille, date_naissance = :date_naissance, adresse_postale = :adresse_postale, telephone = :telephone";
+            $sql = "UPDATE utilisateurs SET 
+                email = :email, 
+                pseudo = :pseudo, 
+                photo_profil = :photo_profil, 
+                prenom = :prenom, 
+                nom_famille = :nom_famille, 
+                date_naissance = :date_naissance, 
+                adresse_postale = :adresse_postale, 
+                telephone = :telephone";
+
             $params = [
                 'email' => $email,
                 'pseudo' => $pseudo,
@@ -82,6 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['publier_trajet'])) {
                 'id' => $userId
             ];
 
+            // Si mot de passe modifié, hash et ajout à la requête
             if ($password !== '') {
                 $sql .= ", mot_de_passe = :mot_de_passe";
                 $params['mot_de_passe'] = password_hash($password, PASSWORD_DEFAULT);
@@ -92,21 +113,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['publier_trajet'])) {
             if ($stmt->execute($params)) {
                 $message = "Profil mis à jour avec succès.";
 
-                // Mise à jour des données $user
-                $user['email'] = $email;
-                $user['pseudo'] = $pseudo;
+                // Mise à jour données utilisateur en session pour l'affichage
+                foreach (['email', 'pseudo', 'prenom', 'nom_famille', 'date_naissance', 'adresse_postale', 'telephone'] as $key) {
+                    $user[$key] = $$key;
+                }
                 $user['photo_profil'] = $photoPath;
-                $user['prenom'] = $prenom;
-                $user['nom_famille'] = $nom_famille;
-                $user['date_naissance'] = $date_naissance;
-                $user['adresse_postale'] = $adresse_postale;
-                $user['telephone'] = $telephone;
 
-                // Recalcule profil complet
-                $profil_complet = true;
-                foreach ($champs_obligatoires as $champ) {
-                    if (empty($user[$champ])) {
-                        $profil_complet = false;
+                // Re-vérification profil complet
+                $profilComplet = true;
+                foreach ($requiredFields as $field) {
+                    if (empty($user[$field])) {
+                        $profilComplet = false;
                         break;
                     }
                 }
@@ -119,9 +136,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['publier_trajet'])) {
     }
 }
 
-// Traitement bouton publier trajet
+// --- Traitement bouton publier trajet ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['publier_trajet'])) {
-    if (($user['role'] === 'chauffeur' || $user['role'] === 'passager_chauffeur') && $profil_complet) {
+    if (($user['role'] === 'chauffeur' || $user['role'] === 'passager_chauffeur') && $profilComplet) {
         header('Location: publier_trajet.php');
         exit;
     } else {
@@ -176,7 +193,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['publier_trajet'])) {
                 <a href="mes_trajets.php" class="btn custom-btn">Mes trajets</a>
             </div>
 
-            <?php if (($user['role'] === 'chauffeur' || $user['role'] === 'passager_chauffeur') && !$profil_complet): ?>
+            <?php if (($user['role'] === 'chauffeur' || $user['role'] === 'passager_chauffeur') && !$profilComplet): ?>
                 <div class="mt-3 text-danger">
                     <small>Complétez votre profil pour accéder à toutes les fonctionnalités.</small>
                 </div>
@@ -243,8 +260,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['publier_trajet'])) {
                 </div>
             </form>
         </div>
-    </div> <!-- fin row -->
+    </div>
 </div>
-
 
 <?php require_once '../templates/footer.php'; ?>

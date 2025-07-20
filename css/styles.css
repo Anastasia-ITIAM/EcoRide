@@ -24,25 +24,56 @@ main {
 
 /* Header*/
 .logo-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.logo-container img {
+  width: 40px;
+  height: 40px;
+  transition: transform 0.3s ease;
 }
 .brand-name {
-    font-family: var(--eco-font);
-    font-size: 2rem;
-    font-weight: bold;
-    color: var(--eco-green)
+  font-family: var(--eco-font);
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--eco-green-dark);
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+.logo-container:hover img,
+.logo-container:hover .brand-name {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
 }
 .navbar-nav > li > a.nav-link {
     color: var(--eco-text);
     font-family: var(--eco-font);
     transition: all 0.3s ease;
+    display: inline-block;
+    transition: transform 0.3s ease;
 }
 .navbar-nav > li > a.nav-link:hover {
     color: var(--eco-green-dark);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    transform: scale(1.1);
 }
+.back-link {
+  color: var(--eco-green-dark);
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.2s ease;
+  margin-left: 20px;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+  color: #2a8259; /* Teinte plus foncée au survol */
+}
+
+
 
 /* Icon du profil de header*/
 a.dropdown-toggle::after {
@@ -66,6 +97,22 @@ a.dropdown-toggle::after {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
   background-color: transparent !important;
 }
+.dropdown-menu.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* Le déclencheur (le lien avec l’image) */
+a.dropdown-toggle {
+  display: inline-block !important;
+  transition: transform 0.3s ease;
+}
+
+/* Facultatif : petit effet sur hover du déclencheur */
+a.dropdown-toggle:hover {
+  transform: scale(1.2);
+}
 
 /* Boutons*/
 .custom-btn {
@@ -76,11 +123,13 @@ a.dropdown-toggle::after {
     border-radius: 6px;
     width: auto !important;
     display: inline-block !important;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 .custom-btn:hover {
     background-color: var(--eco-green-dark);
     color: white;
     box-shadow: 0 6px 10px rgba(14, 138, 65, 0.6);
+    transform: scale(1.05);
 }
 .btn-danger {
     font-family: var(--eco-font);
@@ -88,11 +137,15 @@ a.dropdown-toggle::after {
     color: white;
     border: none;
     border-radius: 6px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+
 }
 .btn-danger:hover {
     background-color: rgb(153, 4, 4);
     color: white;
     box-shadow: 0 6px 10px rgba(169, 61, 90, 0.6);
+    transform: scale(1.05);
+
 }
 
 /* Alerts */
@@ -133,7 +186,7 @@ h2 {
     font-family: var(--eco-font);
 }
 p span {
-    color: var(--eco-green); 
+    color: var(--eco-green-dark); 
     font-weight: bold;      
     font-family: var(--eco-font); 
 }
@@ -197,7 +250,6 @@ input:-webkit-autofill {
   box-shadow: 0 0 0px 1000px white inset !important; 
   -webkit-text-fill-color: #000 !important;         
   border: 2px solid var(--eco-green) !important;
-  border-radius: 1.5rem;
   transition: background-color 5000s ease-in-out 0s;
 }
 select:-webkit-autofill {
@@ -266,12 +318,43 @@ textarea:-webkit-autofill {
 }
 .eco-checkbox:checked {
     background-color: var(--eco-green);
+    border-color: #075e23;
 }
 .form-check-input:focus {
     box-shadow: 0 0 0 0.25rem rgba(55, 147, 94, 0.25);
     border-color: var(--eco-green);
     outline: none;
 }
+.eco-checkbox {
+  margin-right: 0.5rem;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+#togglePassword,
+#toggleConfirmPassword {
+  position: absolute;
+  top: 70%;            
+  right: 10px;         
+  transform: translateY(-50%); 
+  cursor: pointer;
+  font-size: 1.2rem;
+  border: none;
+  outline: none;
+  transition: color 0.3s ease;
+}
+
+form {
+  opacity: 1;
+  transform: translateY(20px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+form.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 
 /* Page de details*/
 .eco-box {

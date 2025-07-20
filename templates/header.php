@@ -25,6 +25,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <span class="brand-name">EcoRide</span>
             </a>
 
+
             <!-- Bouton menu burger -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#ecoNavbar" aria-controls="ecoNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -75,3 +76,8 @@ if (session_status() === PHP_SESSION_NONE) {
         </div>
     </nav>
 </header>
+<?php if (basename($_SERVER['PHP_SELF']) !== 'index.php'): ?>
+  <a href="javascript:history.back()" class="back-link fixed">
+    ← Retour
+  </a>
+<?php endif; ?>

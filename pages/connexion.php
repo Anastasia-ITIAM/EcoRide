@@ -3,9 +3,6 @@ session_start();
 require_once '../config/db.php'; 
 require_once '../templates/header.php';
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 $erreur = '';
 
 if (isset($_GET['redirect'])) {
@@ -20,15 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE pseudo = :pseudo");
         $stmt->execute(['pseudo' => $pseudo]);
         $utilisateur = $stmt->fetch();
-        var_dump($pseudo);
-        var_dump($motdepasse);
-        var_dump($utilisateur['mot_de_passe']);
-        var_dump(password_verify($motdepasse, $utilisateur['mot_de_passe']));
-
-
-
-
-        if ($utilisateur && password_verify($motdepasse, $utilisateur['mot_de_passe'])) {
+   
+    if ($utilisateur && password_verify($motdepasse, $utilisateur['mot_de_passe'])) {
             // Authentification réussie
             $_SESSION['user_id'] = $utilisateur['id'];
             $_SESSION['user_pseudo'] = $utilisateur['pseudo'];
@@ -56,15 +46,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="alert alert-danger text-center"><?= htmlspecialchars($erreur) ?></div>
     <?php endif; ?>
 
-    <form method="POST" action="" class="row g-3 col-md-6 mx-auto">
+    <form id="FormConnexion" method="POST" action="" class="row g-3 col-md-6 mx-auto">
         <div class="col-12">
             <label for="pseudo" class="form-label">Pseudo</label>
             <input type="text" class="form-control" name="pseudo" id="pseudo" required />
         </div>
 
-        <div class="col-12">
-            <label for="motdepasse" class="form-label">Mot de passe</label>
-            <input type="password" class="form-control" name="motdepasse" id="motdepasse" required />
+        <div class="col-12 position-relative">
+                <label for="motdepasse" class="form-label">Mot de passe</label>
+                <input type="password" class="form-control" name="motdepasse" id="motdepasse" required />
+                <button type="button" id="togglePassword" class="btn btn-sm">
+                    👁️
+                </button>
         </div>
 
         <div class="col-12 text-center">
@@ -80,5 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </form>
 </div>
+
 
 <?php require_once '../templates/footer.php'; ?>

@@ -200,7 +200,7 @@ try {
             } elseif ($userCredits < $trajet['prix']) {
                 echo '<div class="alert alert-danger">Crédits insuffisants. Vous avez ' . htmlspecialchars($userCredits) . ' crédits.</div>';
             } else {
-                echo '<button class="btn custom-btn" data-bs-toggle="modal" data-bs-target="#confirmParticipationModal">
+                echo '<button class="btn custom-btn me-2" data-bs-toggle="modal" data-bs-target="#confirmParticipationModal">
                         Participer au covoiturage
                       </button>';
             }

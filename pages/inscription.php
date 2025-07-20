@@ -13,7 +13,7 @@ unset($_SESSION['old']);
 ?>
 
 <div class="container my-5">
-    <h2 class="text-center mb-4" style="color: var(--eco-text);">C’est parti pour des trajets plus écolos🌿</h2>
+    <h2 class="text-center mb-4"">C’est parti pour des trajets plus écolos🌿</h2>
 
     <?php if (!empty($_SESSION['form_erreurs'])): ?>
         <div class="alert alert-danger">
@@ -37,14 +37,22 @@ unset($_SESSION['old']);
             <input type="text" class="form-control" id="pseudo" name="pseudo" required
                 value="<?= htmlspecialchars($old['pseudo'] ?? '') ?>">
         </div>
-        <div class="col-12">
+        <div class="col-12 position-relative">
             <label for="motdepasse" class="form-label">Mot de passe</label>
             <input type="password" class="form-control" id="motdepasse" name="motdepasse" required>
+            <button type="button" id="togglePassword" class="btn btn-sm">
+                👁️
+            </button>
         </div>
-        <div class="col-12">
+
+        <div class="col-12 position-relative">
             <label for="confirmer_motdepasse" class="form-label">Confirmer le mot de passe</label>
             <input type="password" class="form-control" id="confirmer_motdepasse" name="confirmer_motdepasse" required>
+            <button type="button" id="toggleConfirmPassword" class="btn btn-sm">
+                👁️
+            </button>
         </div>
+
         <div class="col-12">
             <div class="form-check">
                 <input class="form-check-input eco-checkbox" type="checkbox" id="conditions" name="conditions" required>

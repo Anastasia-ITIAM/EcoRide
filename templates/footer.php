@@ -70,5 +70,6 @@
     </div>
   </div>
 </div>
+<script src="/EcoRide/js/main.js" defer></script>
 </body>
 </html>

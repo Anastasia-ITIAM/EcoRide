@@ -99,16 +99,6 @@ if (isset($_GET['inscription']) && $_GET['inscription'] === 'success') {
     </div>
   </div>
 
-  <script>
-    function echangerAdresses() {
-      const depart = document.getElementById('depart');
-      const arrivee = document.getElementById('arrivee');
-      const temp = depart.value;
-      depart.value = arrivee.value;
-      arrivee.value = temp;
-    }
-  </script>
-
 <?php
 if (!empty($depart) && !empty($arrivee)) {
     // Construction de la requête principale

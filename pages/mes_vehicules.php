@@ -204,8 +204,9 @@ $preferences = $stmt->fetch(PDO::FETCH_ASSOC);
                         <input type="number" name="places_disponibles" min="1" required class="form-control" value="<?= (int)$v['places_disponibles'] ?>">
                     </div>
                 </div>
-
+                <div class="text-center">
                 <button type="submit" class="btn custom-btn">Enregistrer</button>
+                </div>
             </form>
 
             <!-- Formulaire suppression véhicule -->
@@ -272,8 +273,9 @@ $preferences = $stmt->fetch(PDO::FETCH_ASSOC);
 
         <label>Préférences personnalisées</label>
         <textarea name="new_preferences_personnalisees" class="form-control mb-3" rows="3"></textarea>
-
+        <div class="text-center">
         <button type="submit" class="btn custom-btn">Ajouter le véhicule</button>
+        </div>
     </form>
 
     <div class="text-center mt-4">

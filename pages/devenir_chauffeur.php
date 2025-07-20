@@ -137,12 +137,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="form-check mb-2">
             <input type="checkbox" class="form-check-input" id="fumeur" name="fumeur" <?= isset($_POST['fumeur']) ? 'checked' : '' ?>>
-            <label class="form-check-label" for="fumeur">Accepte les fumeurs</label>
+            <label class="form-check-label ms-2" for="fumeur">Accepte les fumeurs</label>
         </div>
 
         <div class="form-check mb-4">
             <input type="checkbox" class="form-check-input" id="animaux_acceptes" name="animaux_acceptes" <?= isset($_POST['animaux_acceptes']) ? 'checked' : '' ?>>
-            <label class="form-check-label" for="animaux_acceptes">Accepte les animaux</label>
+            <label class="form-check-label ms-2" for="animaux_acceptes">Accepte les animaux</label>
         </div>
 
         <div class="mb-3">

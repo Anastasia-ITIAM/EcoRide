@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Test Logo Agrandir</title>
+<style>
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .brand-name {
+    font-family: Arial, sans-serif;
+    font-size: 2rem;
+    font-weight: bold;
+    color: green;
+    display: inline-block;
+    transition: transform 0.3s ease;
+  }
+  .brand-name.enlarge {
+    transform: scale(1.5);
+  }
+</style>
+</head>
+<body>
+
+<a href="#" class="logo-container text-decoration-none">
+  <img src="https://via.placeholder.com/40" alt="Logo" width="40" height="40" />
+  <span class="brand-name">EcoRide</span>
+</a>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const logoContainer = document.querySelector('.logo-container');
+    const brandName = logoContainer.querySelector('.brand-name');
+
+    logoContainer.addEventListener('click', (e) => {
+      e.preventDefault();
+      brandName.classList.add('enlarge');
+      setTimeout(() => {
+        brandName.classList.remove('enlarge');
+      }, 300);
+    });
+  });
+</script>
+
+</body>
+</html>

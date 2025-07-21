@@ -5,9 +5,6 @@ session_start();
 require_once __DIR__ . '/../config/db.php';
 require_once '../templates/header.php';
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 // Récupération des infos utilisateur depuis la session
 $userId = isset($_SESSION['user_id']) ? (int) $_SESSION['user_id'] : null;
 $userCredits = $_SESSION['user_credits'] ?? 0;

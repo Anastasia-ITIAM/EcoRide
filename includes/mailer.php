@@ -5,19 +5,15 @@ use PHPMailer\PHPMailer\Exception;
 
 require_once realpath(__DIR__ . '/../vendor/autoload.php');
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 function envoyerEmailParticipant($destinataire, $pseudo) {
     $mail = new PHPMailer(true);
 
     try {
         $mail->isSMTP();
-        $mail->Host = 'sandbox.smtp.mailtrap.io';  // ou smtp.gmail.com si tu veux
+        $mail->Host = 'sandbox.smtp.mailtrap.io';  
         $mail->SMTPAuth = true;
-        $mail->Username = 'd153a679dc20ab';        // à modifier avec tes identifiants
-        $mail->Password = '62d939fddb28cd';        // à modifier
+        $mail->Username = 'd153a679dc20ab';        
+        $mail->Password = '62d939fddb28cd';      
         $mail->Port = 587;
         $mail->CharSet = 'UTF-8';
 

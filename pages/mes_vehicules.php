@@ -151,8 +151,6 @@ $preferences = $stmt->fetch(PDO::FETCH_ASSOC);
 
 <div class="container my-4" style="max-width:900px;">
     <h2 class="text-center mb-4">Mes véhicules 🧩</h2>
-
-    <!-- Affichage message utilisateur -->
     <?php if ($message): ?>
         <div class="alert alert-info"><?= $message ?></div>
     <?php endif; ?>
@@ -170,7 +168,6 @@ $preferences = $stmt->fetch(PDO::FETCH_ASSOC);
                 <div class="row">
                     <div class="col-md-6 mb-2">
                         <label>Plaque</label>
-                        <!-- Le champ plaque est affiché mais sans name, donc non modifiable par l'utilisateur -->
                         <input class="form-control" value="<?= htmlspecialchars($v['plaque']) ?>" readonly>
                     </div>
                     <div class="col-md-6 mb-2">

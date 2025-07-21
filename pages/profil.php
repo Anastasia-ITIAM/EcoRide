@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 require_once '../config/db.php';
 require_once '../config/auth.php';
 
@@ -33,7 +32,6 @@ foreach ($requiredFields as $field) {
 
 // --- Traitement formulaire mise à jour profil ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['publier_trajet'])) {
-    // Récupération des données POST
     $email            = $_POST['email'] ?? $user['email'];
     $pseudo           = $_POST['pseudo'] ?? $user['pseudo'];
     $prenom           = trim($_POST['prenom'] ?? $user['prenom']);

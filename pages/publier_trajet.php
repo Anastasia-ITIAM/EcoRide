@@ -35,7 +35,6 @@ if (isset($_SESSION['message'])) {
 
 // Traitement formulaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Nettoyage des données reçues
     $depart = trim($_POST['adresse_depart'] ?? '');
     $arrivee = trim($_POST['adresse_arrivee'] ?? '');
     $date_depart = $_POST['date_depart'] ?? '';
@@ -139,11 +138,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <option value="1" <?= (isset($_POST['voyage_ecologique']) && $_POST['voyage_ecologique'] == '1') ? 'selected' : '' ?>>Oui</option>
                 <option value="0" <?= (!isset($_POST['voyage_ecologique']) || $_POST['voyage_ecologique'] == '0') ? 'selected' : '' ?>>Non</option>
             </select>
-        </div>
-
-        <div class="mb-3">
-            <label for="duree_minutes" class="form-label">Durée du trajet (en minutes)</label>
-            <input type="number" name="duree_minutes" id="duree_minutes" class="form-control" min="0" value="<?= htmlspecialchars($_POST['duree_minutes'] ?? '') ?>">
         </div>
 
         <div class="mb-3">

@@ -1,8 +1,6 @@
 <?php
 session_start();
 require_once '../config/db.php';
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 
 // Vérification rôle admin
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'administrateur') {

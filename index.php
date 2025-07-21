@@ -26,7 +26,7 @@ require_once 'templates/header.php';
                         $active = $index === 0 ? 'active' : '';
                         echo "<div class='carousel-item $active'>
                                 <img src='assets/$img' class='d-block w-100' alt='Image $index'>
-                              </div>";
+                                </div>";
                     }
                     ?>
                 </div>

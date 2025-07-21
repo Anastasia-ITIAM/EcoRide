@@ -75,17 +75,12 @@ if (isset($_GET['inscription']) && $_GET['inscription'] === 'success') {
     <div class="offcanvas-body">
       <div class="form-check mb-3">
         <input class="form-check-input" type="checkbox" id="ecologique" name="ecologique" value="1" form="rechercheForm" <?= $ecologique ? 'checked' : '' ?>>
-        <label class="form-check-label" for="ecologique">Voyage écologique</label>
+        <label class="form-check-label ms-2" for="ecologique">Voyage écologique</label>
       </div>
 
       <div class="mb-3">
         <label for="prix_max" class="form-label">Prix maximum (crédit)</label>
         <input type="number" class="form-control" id="prix_max" name="prix_max" value="<?= htmlspecialchars($_GET['prix_max'] ?? '') ?>" form="rechercheForm" min="0" step="0.01">
-      </div>
-
-      <div class="mb-3">
-        <label for="duree_max" class="form-label">Durée maximum (minutes)</label>
-        <input type="number" class="form-control" id="duree_max" name="duree_max" value="<?= htmlspecialchars($_GET['duree_max'] ?? '') ?>" form="rechercheForm" min="1" step="1">
       </div>
 
       <div class="mb-3">
@@ -120,7 +115,7 @@ if (!empty($depart) && !empty($arrivee)) {
     ];
 
     if (!empty($datetime)) {
-        // Extraction de la date uniquement
+        // Extraction de la date 
         $date = explode('T', $datetime)[0];
         $query .= " AND c.date_depart = :date";
         $params['date'] = $date;
@@ -133,11 +128,6 @@ if (!empty($depart) && !empty($arrivee)) {
     if ($prix_max !== null) {
         $query .= " AND c.prix <= :prix_max";
         $params['prix_max'] = $prix_max;
-    }
-
-    if ($duree_max !== null) {
-        $query .= " AND c.duree_minutes <= :duree_max";
-        $params['duree_max'] = $duree_max;
     }
 
     $query .= " GROUP BY c.id, u.pseudo, u.photo_profil, v.marque, v.modele";
@@ -252,8 +242,12 @@ function afficherTrajets(array $trajets): void {
             $heureDepart = new DateTime('00:00');
         }
 
-        $heureArrivee = clone $heureDepart;
-        $heureArrivee->modify('+' . (int)$trajet['duree_minutes'] . ' minutes');
+        try {
+            $heureArrivee = new DateTime($trajet['heure_arrivee']);
+        } catch (Exception $e) {
+            $heureArrivee = clone $heureDepart;
+  }
+
 
         echo '<div class="col-md-4 mb-4">';
         echo '<div class="card h-100" style="background-color: var(--eco-bg)">';
@@ -284,12 +278,11 @@ function afficherTrajets(array $trajets): void {
                 <a class="btn custom-btn btn-sm" href="detail.php?id=' . intval($trajet['id']) . '">Voir détails</a>
               </div>';
 
-        echo '</div>'; // card-body
-        echo '</div>'; // card
-        echo '</div>'; // col
+        echo '</div>'; 
+        echo '</div>'; 
+        echo '</div>'; 
     }
-    echo '</div>'; // row
-    echo '</div>'; // container
+    echo '</div>'; 
 }
 
 ?>

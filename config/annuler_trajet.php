@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once '../config/db.php';
-require_once '../includes/mailer.php'; // ta fonction envoyerEmailParticipant($destinataire, $pseudo)
+require_once '../includes/mailer.php'; 
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../connexion.php");

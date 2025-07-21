@@ -3,9 +3,6 @@ session_start();
 require_once '../config/db.php';
 require_once '../config/auth.php';
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 if (!isset($_SESSION['user_id'])) {
     header('Location: connexion.php');
     exit;
@@ -72,11 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$conducteurId, $fumeur, $animaux, $preferences_personnalisees]);
 
             $pdo->commit();
-
-            // Enregistrer message succès en session
             $_SESSION['success_message'] = "Félicitations! Vous voilà officiellement chauffeur EcoRide 🦖";
-
-            // Redirection vers profil après succès
             header('Location: profil.php');
             exit;
 

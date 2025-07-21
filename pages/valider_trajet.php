@@ -121,7 +121,7 @@ require_once '../templates/header.php';
         <input type="number" name="note" id="note" min="1" max="5" class="form-control" value="<?= htmlspecialchars($validation['note'] ?? '') ?>">
     </div>
     <button type="submit" class="btn custom-btn">Valider le trajet</button>
-    <a href="mes_trajets.php" class="btn custom-btn">Annuler</a>
+    <a href="mes_trajets.php" class="btn btn-danger">Annuler</a>
 </form>
 </div>
 

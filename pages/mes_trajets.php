@@ -145,7 +145,9 @@ if (!empty($_SESSION['message'])) {
                   <strong>Prix :</strong> <?= htmlspecialchars($trajet['prix']) ?> crédits<br>
                   <strong style="color: red;">Rôle :</strong> <?= htmlspecialchars(ucfirst($trajet['role'])) ?><br>
                 </p>
+                <div class="text-center">
                 <a href="valider_trajet.php?id=<?= $trajet['id'] ?>" class="btn custom-btn">Valider ce trajet</a>
+                </div>
               </div>
             </div>
           <?php endforeach; ?>
@@ -171,7 +173,9 @@ if (!empty($_SESSION['message'])) {
                   <strong>Prix :</strong> <?= htmlspecialchars($trajet['prix']) ?> crédits<br>
                   <strong style="color: red;">Rôle :</strong> <?= htmlspecialchars(ucfirst($trajet['role'])) ?><br>
                 </p>
+                <div class="text-center">
                 <a href="detail.php?id=<?= $trajet['id'] ?>" class="btn custom-btn">Voir les détails</a>
+                </div>
               </div>
             </div>
           <?php endforeach; ?>

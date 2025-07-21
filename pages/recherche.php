@@ -52,7 +52,7 @@ if (isset($_GET['inscription']) && $_GET['inscription'] === 'success') {
             </div>
           </div>
 
-          <div class="text-end mb-3">
+          <div class="text-end mt-2">
             <button class="btn custom-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterSidebar">
               🔍 Filtres
             </button>

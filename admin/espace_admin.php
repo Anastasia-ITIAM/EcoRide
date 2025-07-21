@@ -85,6 +85,11 @@ th, td { padding: 8px; border: 1px solid #ddd; }
 </style>
 </head>
 <body>
+    <?php if (basename($_SERVER['PHP_SELF']) !== 'index.php'): ?>
+  <a href="javascript:history.back()" class="back-link fixed">
+    ← Retour
+  </a>
+<?php endif; ?>
 <h1>Espace Administrateur</h1>
 
 <h2>Créer un compte employé</h2>

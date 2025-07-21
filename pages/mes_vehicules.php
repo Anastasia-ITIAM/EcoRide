@@ -261,11 +261,11 @@ $preferences = $stmt->fetch(PDO::FETCH_ASSOC);
 
         <div class="form-check mt-2">
             <input type="checkbox" class="form-check-input" name="new_fumeur" id="fumeur">
-            <label for="fumeur" class="form-check-label">Accepte les fumeurs</label>
+            <label for="fumeur" class="form-check-label ms-2">Accepte les fumeurs</label>
         </div>
         <div class="form-check mb-3">
             <input type="checkbox" class="form-check-input" name="new_animaux_acceptes" id="animaux">
-            <label for="animaux" class="form-check-label">Accepte les animaux</label>
+            <label for="animaux" class="form-check-label ms-2">Accepte les animaux</label>
         </div>
 
         <label>Préférences personnalisées</label>

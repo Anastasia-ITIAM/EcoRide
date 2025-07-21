@@ -4,9 +4,6 @@ session_start();
 require_once '../templates/header.php';
 require_once __DIR__ . '/../config/db.php';
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 // Récupération et nettoyage des données GET
 $depart = trim($_GET['depart'] ?? '');
 $arrivee = trim($_GET['arrivee'] ?? '');
@@ -61,7 +58,6 @@ if (isset($_GET['inscription']) && $_GET['inscription'] === 'success') {
           <div class="text-center mt-1">
             <button type="submit" class="btn custom-btn">Rechercher</button>
           </div>
-          
         </div>
       </div>
     </form>
@@ -95,112 +91,64 @@ if (isset($_GET['inscription']) && $_GET['inscription'] === 'success') {
   </div>
 
 <?php
-if (!empty($depart) && !empty($arrivee)) {
-    // Construction de la requête principale
-    $query = "
-        SELECT c.*, u.pseudo, u.photo_profil, v.marque, v.modele,
-               COALESCE(AVG(a.note), 0) AS note_moyenne
-        FROM covoiturages c
-        JOIN utilisateurs u ON c.conducteur_id = u.id
-        JOIN vehicules v ON c.vehicule_id = v.id
-        LEFT JOIN avis a ON a.conducteur_id = c.conducteur_id
-        WHERE c.adresse_depart LIKE :depart
-          AND c.adresse_arrivee LIKE :arrivee
-          AND c.statut != 'termine'
-    ";
 
-    $params = [
-        'depart' => "%$depart%",
-        'arrivee' => "%$arrivee%"
-    ];
+// Construction de la requête
+$query = "
+    SELECT c.*, u.pseudo, u.photo_profil, v.marque, v.modele,
+           COALESCE(AVG(a.note), 0) AS note_moyenne
+    FROM covoiturages c
+    JOIN utilisateurs u ON c.conducteur_id = u.id
+    JOIN vehicules v ON c.vehicule_id = v.id
+    LEFT JOIN avis a ON a.conducteur_id = c.conducteur_id
+    WHERE c.statut != 'termine'
+";
 
-    if (!empty($datetime)) {
-        // Extraction de la date 
-        $date = explode('T', $datetime)[0];
-        $query .= " AND c.date_depart = :date";
-        $params['date'] = $date;
-    }
+$params = [];
 
-    if ($ecologique) {
-        $query .= " AND c.voyage_ecologique = 1";
-    }
+if (!empty($depart)) {
+    $query .= " AND c.adresse_depart LIKE :depart";
+    $params['depart'] = "%$depart%";
+}
 
-    if ($prix_max !== null) {
-        $query .= " AND c.prix <= :prix_max";
-        $params['prix_max'] = $prix_max;
-    }
+if (!empty($arrivee)) {
+    $query .= " AND c.adresse_arrivee LIKE :arrivee";
+    $params['arrivee'] = "%$arrivee%";
+}
 
-    $query .= " GROUP BY c.id, u.pseudo, u.photo_profil, v.marque, v.modele";
+if (!empty($datetime)) {
+    $date = explode('T', $datetime)[0];
+    $query .= " AND c.date_depart = :date";
+    $params['date'] = $date;
+}
 
-    if ($note_min !== null) {
-        $query .= " HAVING note_moyenne >= :note_min";
-        $params['note_min'] = $note_min;
-    }
+if ($ecologique) {
+    $query .= " AND c.voyage_ecologique = 1";
+}
 
-    $query .= " ORDER BY c.date_depart ASC, c.heure_depart ASC";
+if ($prix_max !== null) {
+    $query .= " AND c.prix <= :prix_max";
+    $params['prix_max'] = $prix_max;
+}
 
-    $stmt = $pdo->prepare($query);
-    $stmt->execute($params);
-    $results = $stmt->fetchAll();
+$query .= " GROUP BY c.id, u.pseudo, u.photo_profil, v.marque, v.modele";
 
-    if ($results) {
-        afficherTrajets($results);
-    } else {
-        echo "<div class='alert alert-info mt-3'>Aucun trajet exact trouvé. Voici des trajets alternatifs contenant « " . htmlspecialchars($depart) . " » ou « " . htmlspecialchars($arrivee) . " » dans le trajet.</div>";
+if ($note_min !== null) {
+    $query .= " HAVING note_moyenne >= :note_min";
+    $params['note_min'] = $note_min;
+}
 
-        $altQuery = "
-            SELECT c.*, u.pseudo, u.photo_profil, v.marque, v.modele,
-                   COALESCE(AVG(a.note), 0) AS note_moyenne
-            FROM covoiturages c
-            JOIN utilisateurs u ON c.conducteur_id = u.id
-            JOIN vehicules v ON c.vehicule_id = v.id
-            LEFT JOIN avis a ON a.conducteur_id = c.conducteur_id
-            WHERE (c.adresse_depart LIKE :ville OR c.adresse_arrivee LIKE :ville)
-            AND c.statut != 'termine'
-            GROUP BY c.id, u.pseudo, u.photo_profil, v.marque, v.modele
-            ORDER BY c.date_depart ASC, c.heure_depart ASC
-            LIMIT 10
-        ";
+$query .= " ORDER BY c.date_depart ASC, c.heure_depart ASC";
 
-        $stmtAlt = $pdo->prepare($altQuery);
-        $stmtAlt->execute(['ville' => "%$depart%"]);
-        $altResults = $stmtAlt->fetchAll();
+$stmt = $pdo->prepare($query);
+$stmt->execute($params);
+$results = $stmt->fetchAll();
 
-        if (!$altResults) {
-            $stmtAlt->execute(['ville' => "%$arrivee%"]);
-            $altResults = $stmtAlt->fetchAll();
-        }
-
-        if ($altResults) {
-            afficherTrajets($altResults);
-        } else {
-            echo "<div class='alert alert-info mt-3'>Aucun trajet alternatif trouvé. Voici quelques trajets récents :</div>";
-
-            $recentQuery = "
-                SELECT c.*, u.pseudo, u.photo_profil, v.marque, v.modele,
-                       COALESCE(AVG(a.note), 0) AS note_moyenne
-                FROM covoiturages c
-                JOIN utilisateurs u ON c.conducteur_id = u.id
-                JOIN vehicules v ON c.vehicule_id = v.id
-                LEFT JOIN avis a ON a.conducteur_id = c.conducteur_id
-                WHERE c.statut != 'termine'
-                GROUP BY c.id, u.pseudo, u.photo_profil, v.marque, v.modele
-                ORDER BY c.date_depart DESC, c.heure_depart DESC
-                LIMIT 10
-            ";
-
-            $stmtRecent = $pdo->query($recentQuery);
-            $recentResults = $stmtRecent->fetchAll();
-            if ($recentResults) {
-                afficherTrajets($recentResults);
-            } else {
-                echo "<div class='alert alert-info'>Aucun trajet disponible pour le moment.</div>";
-            }
-        }
-    }
+if ($results) {
+    afficherTrajets($results);
 } else {
-    echo "<div class='alert alert-info mt-3'>Aucun critère de recherche renseigné, voici quelques trajets récents :</div>";
+    echo "<div class='alert alert-info mt-3'>Aucun trajet trouvé avec les filtres actuels.</div>";
 
+    // Requête de secours : derniers trajets récents
     $recentQuery = "
         SELECT c.*, u.pseudo, u.photo_profil, v.marque, v.modele,
                COALESCE(AVG(a.note), 0) AS note_moyenne
@@ -217,6 +165,7 @@ if (!empty($depart) && !empty($arrivee)) {
     $stmtRecent = $pdo->query($recentQuery);
     $recentResults = $stmtRecent->fetchAll();
     if ($recentResults) {
+        echo "<div class='alert alert-info'>Voici quelques trajets récents :</div>";
         afficherTrajets($recentResults);
     } else {
         echo "<div class='alert alert-info'>Aucun trajet disponible pour le moment.</div>";
@@ -225,9 +174,6 @@ if (!empty($depart) && !empty($arrivee)) {
 
 /**
  * Fonction d'affichage des trajets
- *
- * @param array $trajets
- * @return void
  */
 function afficherTrajets(array $trajets): void {
     echo '<div class="container mt-4">';
@@ -246,14 +192,12 @@ function afficherTrajets(array $trajets): void {
             $heureArrivee = new DateTime($trajet['heure_arrivee']);
         } catch (Exception $e) {
             $heureArrivee = clone $heureDepart;
-  }
-
+        }
 
         echo '<div class="col-md-4 mb-4">';
         echo '<div class="card h-100" style="background-color: var(--eco-bg)">';
         echo '<div class="card-body">';
 
-        // Photo et infos trajet
         echo '<div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">';
         echo '<img src="' . $photo . '" alt="Photo du conducteur·rice" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">';
         echo '<div>';
@@ -266,27 +210,19 @@ function afficherTrajets(array $trajets): void {
         echo '<u>Arrivée prévue</u> : ' . $heureArrivee->format('H:i') . '<br>';
         echo '</div></div>';
 
-        // Badge écologique
-        if (!empty($trajet['voyage_ecologique'])) {
-            echo '<div class="text-center mb-3">
-                    <span class="btn custom-btn btn-sm">🌱 EcoRide</span>
-                  </div>';
-        }
-
-        // Bouton détail
+       if (!empty($trajet['voyage_ecologique'])) {
+        echo '<div class="text-center mb-3">
+                <span class="eco-label">🌱 EcoRide</span>
+              </div>';
+}
         echo '<div class="text-center">
                 <a class="btn custom-btn btn-sm" href="detail.php?id=' . intval($trajet['id']) . '">Voir détails</a>
               </div>';
 
-        echo '</div>'; 
-        echo '</div>'; 
-        echo '</div>'; 
+        echo '</div></div></div>';
     }
-    echo '</div>'; 
+    echo '</div></div>';
 }
 
+require_once '../templates/footer.php';
 ?>
-
-</main>
-
-<?php require_once '../templates/footer.php'; ?>

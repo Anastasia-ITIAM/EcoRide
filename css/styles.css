@@ -70,10 +70,8 @@ main {
 
 .back-link:hover {
   text-decoration: underline;
-  color: #2a8259; /* Teinte plus foncée au survol */
+  color: #2a8259;
 }
-
-
 
 /* Icon du profil de header*/
 a.dropdown-toggle::after {
@@ -102,14 +100,10 @@ a.dropdown-toggle::after {
   transform: translateY(0) scale(1);
   pointer-events: auto;
 }
-
-/* Le déclencheur (le lien avec l’image) */
 a.dropdown-toggle {
   display: inline-block !important;
   transition: transform 0.3s ease;
 }
-
-/* Facultatif : petit effet sur hover du déclencheur */
 a.dropdown-toggle:hover {
   transform: scale(1.2);
 }
@@ -291,6 +285,15 @@ textarea:-webkit-autofill {
 .arrow-swap-btn {
       margin: 8px 0;
     }
+.eco-label {
+    color: black;
+    padding: 0.4rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    font-weight: 550;
+    min-width: 100px;
+    user-select: none;
+}
 
 /* Page de contact*/
 .text-center {
@@ -354,7 +357,6 @@ form.loaded {
   opacity: 1;
   transform: translateY(0);
 }
-
 
 /* Page de details*/
 .eco-box {

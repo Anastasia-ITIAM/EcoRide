@@ -90,8 +90,8 @@ th, td { padding: 8px; border: 1px solid #ddd; }
     ← Retour
   </a>
 <?php endif; ?>
-<h1>Espace Administrateur</h1>
 
+<h1>Espace Administrateur</h1>
 <h2>Créer un compte employé</h2>
 <form method="POST" style="margin-bottom: 20px;">
     <input type="text" name="pseudo" placeholder="Pseudo" required>

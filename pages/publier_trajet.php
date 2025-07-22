@@ -61,8 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Insérer trajet
             $stmt = $pdo->prepare("INSERT INTO covoiturages 
-                (vehicule_id, conducteur_id, adresse_depart, adresse_arrivee, date_depart, heure_depart, heure_arrivee, places_disponibles, prix, voyage_ecologique, duree_minutes)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                (vehicule_id, conducteur_id, adresse_depart, adresse_arrivee, date_depart, heure_depart, heure_arrivee, places_disponibles, prix, voyage_ecologique)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
             $stmt->execute([
                 $vehicule_id,
@@ -75,7 +75,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $places,
                 $prix,
                 $ecolo,
-                $duree
             ]);
 
             $pdo->commit();

@@ -66,7 +66,7 @@ unset($_SESSION['old']);
             <button type="submit" class="btn custom-btn px-4">S'inscrire</button>
         </div>
         <div class="col-12 text-center">
-            <p class="mt-3">Déjà un compte ? <a href="/EcoRide/connexion.php" class="eco-link">Se connecter</a></p>
+            <p class="mt-3">Déjà un compte ? <a href="/EcoRide/pages/connexion.php" class="eco-link">Se connecter</a></p>
         </div>
     </form>
 </div>
